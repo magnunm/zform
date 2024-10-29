@@ -16,11 +16,20 @@ function transfer_function(z::ComplexF64, de::DifferenceEquation)
 end
 
 function main()
-  de = DifferenceEquation([0.1, 0.2], [1.0, 0.5])
-  tf = z -> transfer_function(z, de)
+  de = DifferenceEquation([1.0, 0.8, 0.5], [1.0, 0.2, 0.45])
+  h = z -> transfer_function(z, de)
 
-  zs = complex(range(-10, 10, length=200))
-  plot(real.(zs), [real.(tf.(zs)), imag.(tf.(zs))])
+  freqs = range(0.0, 1.0, length=200)
+  zs = map(f -> cis(2.0 * pi * f), freqs)
+  hs = h.(zs)
+
+  gains = abs.(hs)
+  phase_shifts = angle.(hs)
+
+  gain_plot = plot(freqs, gains, ylabel="Gain")
+  phase_plot = plot(freqs, phase_shifts, ylabel="Phase Shift", xlabel="Frequency")
+
+  plot(gain_plot, phase_plot, layout=(2, 1))
 
   savefig("plot.png")
 end
