@@ -1,0 +1,5 @@
+# Run
+
+```
+julia main.jl
+```
