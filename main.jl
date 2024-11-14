@@ -1,19 +1,28 @@
-using Plots
+import Plots
+import Polynomials: Polynomial
 
-struct DifferenceEquation
-  feedforward_coeffs::Vector{Float64}  # Length N
-  feedback_coeffs::Vector{Float64}  # Length N (first is always 1)
-end
+include("rational.jl")
 
-function polynomial(z::ComplexF64, coeffs::Vector{Float64})
-  sum(i -> coeffs[i] * z ^ (i - 1), eachindex(coeffs))
-end
+import .RationalFunctions: RationalFunction, RationalFunctions
 
-# This also works for analog filters in the s-plane
-function transfer_function(z::ComplexF64, de::DifferenceEquation)
-  numerator = polynomial(z, reverse(de.feedforward_coeffs))
-  denominator = polynomial(z, reverse(de.feedback_coeffs))
-  return numerator / denominator
+"""Butterworth polynomial coefficients of a given order (> 0).
+
+Using the product formula from
+https://en.m.wikipedia.org/wiki/Butterworth_filter
+
+"""
+function butterworth(order::Int)
+  gamma = pi / (2.0 * order)
+  res = fill(1.0, order + 1)
+
+  # Since a_k = a_(n - k) we only need to iterate to n/2
+  # In a 0-indexed language substitute k -> k - 1 inside [...]
+  for k = 1:round(Int, order / 2)
+    coeff = (cos((k - 1) * gamma) / sin(k * gamma)) * res[k]
+    res[k + 1] = coeff
+    res[order - k + 1] = coeff
+  end
+  res
 end
 
 # Bilinear transform from z to s plane
@@ -52,13 +61,16 @@ function main()
   # TODO: Generate the coefficients
   # TODO: Find the difference equation for the discrete time variant after applying
   #       bilinear transform.
-  de_butter_s_order_10 = DifferenceEquation([1.0], [1.0, 6.3925, 20.4317, 42.8021, 64.8824, 74.2334, 64.8824, 42.8021, 20.4317, 6.3925, 1.0])
+  de_butter_s_order_10 = RationalFunction(Polynomial([1.0]), Polynomial(butterworth(10)))
 
   # The substitution s -> s / omega_c gives a Butterworth with a given cutoff freq
   cutoff_freq = 740.0
   cutoff_omega = cutoff_freq * 2.0 * pi
 
-  h = z -> transfer_function(z_to_s_plane(z, sample_rate) ./ cutoff_omega, de_butter_s_order_10)
+  # Transfer function
+  h = z -> RationalFunctions.eval(z_to_s_plane(z, sample_rate) ./ cutoff_omega, de_butter_s_order_10)
+
+  # h = z -> transfer_function(z_to_s_plane(z, sample_rate) ./ cutoff_omega, de_butter_s_order_10)
 
   # Frequencies are perceived logarithmically
   freqs = logrange(start_freq, end_freq, length=500)
@@ -69,7 +81,7 @@ function main()
   gains = abs.(hs)
   phase_shifts = angle.(hs)
 
-  gain_plot = plot(
+  gain_plot = Plots.plot(
     freqs,
     db.(gains),
     xscale=:log10,
@@ -78,7 +90,7 @@ function main()
     xformatter=x -> string(round(Int, x)),
     ylabel="Gain (dB)"
   )
-  phase_plot = plot(
+  phase_plot = Plots.plot(
     freqs,
     rad_to_deg.(phase_shifts),
     xscale=:log10,
@@ -91,10 +103,10 @@ function main()
     xlabel="Frequency"
   )
 
-  plot(gain_plot, phase_plot, layout=(2, 1), legend=false)
+  Plots.plot(gain_plot, phase_plot, layout=(2, 1), legend=false)
 
   # Switch to SVG for better scalability of graphic
-  savefig("plot.png")
+  Plots.savefig("plot.png")
 end
 
 main()
