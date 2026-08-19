@@ -46,7 +46,7 @@ analytically to get the difference equation coefficients for an implementation.
 function transfer(order::Int, cutoff::Float64, sample_rate::Float64)
   fraction = RationalFunction(Polynomial([1.0]), Polynomial(butterworth(order)))
   cutoff_omega = cutoff * 2.0 * pi
-  z -> RationalFunctions.eval(z_to_s_plane(z, sample_rate) ./ cutoff_omega, fraction)
+  z -> RationalFunctions.evaluate(z_to_s_plane(z, sample_rate) ./ cutoff_omega, fraction)
 end
 
 end

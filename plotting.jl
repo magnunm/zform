@@ -19,7 +19,7 @@ transfer function in the z-domain. The transfer function is a complex function
 of a single complex variable.
 
 """
-function bode(transfer::Function, sample_rate::Float64)
+function bode(transfer::Function, sample_rate::Float64, filename::String="plot.png")
   # Around (sample rate / 2) the analysis breaks down and we get strange results
   # so end before that.
   start_freq = 26.0
@@ -59,7 +59,7 @@ function bode(transfer::Function, sample_rate::Float64)
   Plots.plot(gain_plot, phase_plot, layout=(2, 1), legend=false)
 
   # Switch to SVG for better scalability of graphic
-  Plots.savefig("plot.png")
+  Plots.savefig(filename)
 end
 
 end

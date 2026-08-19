@@ -22,7 +22,7 @@ function transfer(pole::ComplexF64)
     Polynomial([1.0, - 2.0 * real(pole), abs(pole)^2]),
     Polynomial([abs(pole)^2, - 2.0 * real(pole), 1.0])
   )
-  z -> RationalFunctions.eval(z, fraction)
+  z -> RationalFunctions.evaluate(z, fraction)
 end
 
 """Find the discontinuity of the allpass filter phase response.

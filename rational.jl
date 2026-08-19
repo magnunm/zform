@@ -1,6 +1,6 @@
 module RationalFunctions
 
-export RationalFunction, eval
+export RationalFunction, evaluate
 
 import Polynomials: Polynomial
 
@@ -9,7 +9,7 @@ struct RationalFunction
   denominator::Polynomial
 end
 
-function eval(z::ComplexF64, func::RationalFunction)
+function evaluate(z::ComplexF64, func::RationalFunction)
   func.numerator(z) / func.denominator(z)
 end
 

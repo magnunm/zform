@@ -1,4 +1,5 @@
 include("allpass.jl")
+include("bandpass.jl")
 include("butterworth.jl")
 include("plotting.jl")
 
@@ -6,10 +7,11 @@ import Plots
 import Polynomials: Polynomial
 
 import .Allpass
+import .Bandpass
 import .Butterworth
 import .Plotting
 
-function main()
+function plot_pole_to_discontinuity()
   sample_rate = 44100.0
 
   f = v -> Allpass.discontinuity(v, sample_rate)
@@ -34,6 +36,17 @@ function main()
   Plots.plot(plot1, plot2, layout=(2, 1), legend=false)
 
   Plots.savefig("pole_to_discontinutiy.png")
+end
+
+function main()
+  sample_rate = 44100.0
+
+  plot_pole_to_discontinuity()
+
+  allpass_transfer = Allpass.transfer(0.9 * cis(pi / 128.0))
+  bandpass_transfer = Bandpass.transfer(700.0, 20.0, sample_rate)
+  Plotting.bode(allpass_transfer, sample_rate)
+  Plotting.bode(bandpass_transfer, sample_rate, "bandpass.png")
 end
 
 main()
