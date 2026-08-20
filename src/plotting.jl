@@ -19,7 +19,11 @@ transfer function in the z-domain. The transfer function is a complex function
 of a single complex variable.
 
 """
-function bode(transfer::Function, sample_rate::Float64, filename::String="plot.png")
+function bode(
+  transfer::Function,
+  sample_rate::Float64,
+  filename::String=joinpath(@__DIR__, "..", "plots", "plot.png"),
+)
   # Around (sample rate / 2) the analysis breaks down and we get strange results
   # so end before that.
   start_freq = 26.0

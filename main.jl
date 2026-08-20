@@ -1,8 +1,8 @@
-include("allpass.jl")
-include("bandpass.jl")
-include("low_pass_butterworth.jl")
-include("low_pass_biquad.jl")
-include("plotting.jl")
+include("src/allpass.jl")
+include("src/bandpass.jl")
+include("src/low_pass_butterworth.jl")
+include("src/low_pass_biquad.jl")
+include("src/plotting.jl")
 
 import Plots
 import Polynomials: Polynomial
@@ -37,7 +37,7 @@ function plot_pole_to_discontinuity()
   )
   Plots.plot(plot1, plot2, layout=(2, 1), legend=false)
 
-  Plots.savefig("pole_to_discontinutiy.png")
+  Plots.savefig("plots/pole_to_discontinutiy.png")
 end
 
 function main()
@@ -49,10 +49,10 @@ function main()
   bandpass_transfer = Bandpass.transfer(700.0, 20.0, sample_rate)
   low_pass_transfer = LowPassBiquad.transfer(700.0, 50.0, sample_rate)
   butterworth_transfer = LowPassButterworth.transfer(10, 500.0, sample_rate)
-  Plotting.bode(allpass_transfer, sample_rate, "allpass.png")
-  Plotting.bode(bandpass_transfer, sample_rate, "bandpass.png")
-  Plotting.bode(low_pass_transfer, sample_rate, "low_pass_biquad.png")
-  Plotting.bode(butterworth_transfer, sample_rate, "low_pass_butterworth.png")
+  Plotting.bode(allpass_transfer, sample_rate, "plots/allpass.png")
+  Plotting.bode(bandpass_transfer, sample_rate, "plots/bandpass.png")
+  Plotting.bode(low_pass_transfer, sample_rate, "plots/low_pass_biquad.png")
+  Plotting.bode(butterworth_transfer, sample_rate, "plots/low_pass_butterworth.png")
 end
 
 main()
