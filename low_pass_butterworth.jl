@@ -1,4 +1,4 @@
-module Butterworth
+module LowPassButterworth
 
 export transfer
 

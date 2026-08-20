@@ -38,6 +38,10 @@ julia --project=. main.jl
 
 ![Resonant low-pass biquad Bode plot](low_pass_biquad.png)
 
+### Butterworth low-pass filter
+
+![Butterworth low-pass Bode plot](low_pass_butterworth.png)
+
 ### All-pass pole discontinuity
 
 ![All-pass pole discontinuity plot](pole_to_discontinutiy.png)

@@ -1,6 +1,6 @@
 include("allpass.jl")
 include("bandpass.jl")
-include("butterworth.jl")
+include("low_pass_butterworth.jl")
 include("low_pass_biquad.jl")
 include("plotting.jl")
 
@@ -9,7 +9,7 @@ import Polynomials: Polynomial
 
 import .Allpass
 import .Bandpass
-import .Butterworth
+import .LowPassButterworth
 import .LowPassBiquad
 import .Plotting
 
@@ -48,9 +48,11 @@ function main()
   allpass_transfer = Allpass.transfer(0.9 * cis(pi / 128.0))
   bandpass_transfer = Bandpass.transfer(700.0, 20.0, sample_rate)
   low_pass_transfer = LowPassBiquad.transfer(700.0, 50.0, sample_rate)
+  butterworth_transfer = LowPassButterworth.transfer(10, 500.0, sample_rate)
   Plotting.bode(allpass_transfer, sample_rate, "allpass.png")
   Plotting.bode(bandpass_transfer, sample_rate, "bandpass.png")
   Plotting.bode(low_pass_transfer, sample_rate, "low_pass_biquad.png")
+  Plotting.bode(butterworth_transfer, sample_rate, "low_pass_butterworth.png")
 end
 
 main()
