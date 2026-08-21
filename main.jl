@@ -2,6 +2,7 @@ include("src/allpass.jl")
 include("src/bandpass.jl")
 include("src/low_pass_butterworth.jl")
 include("src/low_pass_biquad.jl")
+include("src/phaser.jl")
 include("src/plotting.jl")
 
 import Plots
@@ -11,6 +12,7 @@ import .Allpass
 import .Bandpass
 import .LowPassButterworth
 import .LowPassBiquad
+import .Phaser
 import .Plotting
 
 function plot_pole_to_discontinuity()
@@ -46,10 +48,13 @@ function main()
   plot_pole_to_discontinuity()
 
   allpass_transfer = Allpass.transfer(0.9 * cis(pi / 128.0))
+  phaser_poles = ComplexF64.(0.9 .* cis.(2.0 * pi .* [250.0, 500.0, 1000.0, 2000.0] ./ sample_rate))
+  phaser_transfer = Phaser.transfer(phaser_poles, mix=0.5, feedback=0.3)
   bandpass_transfer = Bandpass.transfer(700.0, 20.0, sample_rate)
   low_pass_transfer = LowPassBiquad.transfer(700.0, 50.0, sample_rate)
   butterworth_transfer = LowPassButterworth.transfer(10, 500.0, sample_rate)
   Plotting.bode(allpass_transfer, sample_rate, "plots/allpass.png")
+  Plotting.bode(phaser_transfer, sample_rate, "plots/phaser.png")
   Plotting.bode(bandpass_transfer, sample_rate, "plots/bandpass.png")
   Plotting.bode(low_pass_transfer, sample_rate, "plots/low_pass_biquad.png")
   Plotting.bode(butterworth_transfer, sample_rate, "plots/low_pass_butterworth.png")

@@ -30,6 +30,10 @@ julia --project=. main.jl
 
 ![All-pass Bode plot](plots/allpass.png)
 
+### Phaser
+
+![Phaser Bode plot](plots/phaser.png)
+
 ### Band-pass filter
 
 ![Band-pass Bode plot](plots/bandpass.png)

@@ -5,7 +5,7 @@ export bode
 import Plots
 
 function db(gain::Float64)
-  10 * log(10, gain)
+  20 * log(10, gain)
 end
 
 function rad_to_deg(angle::Float64)
@@ -60,7 +60,15 @@ function bode(
     xlabel="Frequency"
   )
 
-  Plots.plot(gain_plot, phase_plot, layout=(2, 1), legend=false)
+  Plots.plot(
+    gain_plot,
+    phase_plot,
+    layout=(2, 1),
+    legend=false,
+    size=(800, 600),
+    left_margin=12Plots.mm,
+    bottom_margin=10Plots.mm,
+  )
 
   # Switch to SVG for better scalability of graphic
   Plots.savefig(filename)
