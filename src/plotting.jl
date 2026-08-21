@@ -36,16 +36,25 @@ function bode(
   hs = transfer.(zs)
 
   gains = abs.(hs)
+  gains_db = db.(gains)
   phase_shifts = angle.(hs)
+
+  # An all-pass filter has an exactly flat gain response.  Floating-point
+  # round-off leaves a tiny non-zero range, which is too narrow for GR to
+  # auto-scale reliably, so give every gain plot a sensible minimum padding.
+  minimum_gain = minimum(gains_db)
+  maximum_gain = maximum(gains_db)
+  gain_padding = max(1.0, 0.1 * (maximum_gain - minimum_gain))
 
   gain_plot = Plots.plot(
     freqs,
-    db.(gains),
+    gains_db,
     xscale=:log10,
     minorgrid=true,
     xticks=logrange(start_freq, end_freq, length=5),
     xformatter=x -> string(round(Int, x)),
-    ylabel="Gain (dB)"
+    ylabel="Gain (dB)",
+    ylims=(minimum_gain - gain_padding, maximum_gain + gain_padding),
   )
   phase_plot = Plots.plot(
     freqs,
