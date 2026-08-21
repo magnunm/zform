@@ -26,13 +26,21 @@ julia --project=. main.jl
 
 ## Example plots
 
-### All-pass filter
+### First-order all-pass filter
 
-![All-pass Bode plot](plots/allpass.png)
+![First-order all-pass Bode plot](plots/allpass_first_order.png)
 
-### Phaser
+### Second-order all-pass filter
 
-![Phaser Bode plot](plots/phaser.png)
+![Second-order all-pass Bode plot](plots/allpass_second_order.png)
+
+### First-order all-pass phaser
+
+![First-order all-pass phaser Bode plot](plots/phaser_first_order.png)
+
+### Second-order all-pass phaser
+
+![Second-order all-pass phaser Bode plot](plots/phaser_second_order.png)
 
 ### Band-pass filter
 
